@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using WebApplication1.Models;
@@ -34,5 +35,13 @@ namespace WebApplication1.Controllers
         [Authorize]
         public IActionResult MembersLanding()
         { return View(); }
+
+
+        public async Task<IActionResult> Logout() //Task represents an asynchronous thread/process
+        {
+            await HttpContext.SignOutAsync(); //will erase the cookie holding the session alive
+            return RedirectToAction("Index"); //the outcome: loads the home page for the user who has just been logged out
+
+        }
     }
 }
