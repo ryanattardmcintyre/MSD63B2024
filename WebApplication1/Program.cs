@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
+using WebApplication1.Repositories;
 
 namespace WebApplication1
 {
@@ -24,6 +25,11 @@ namespace WebApplication1
                 });
 
             builder.Services.AddRazorPages();
+
+
+            string project = builder.Configuration["project"].ToString();
+            builder.Services.AddScoped(x => new BlogsRepository(project));
+
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();

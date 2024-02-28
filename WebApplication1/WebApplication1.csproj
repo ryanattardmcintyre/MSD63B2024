@@ -8,6 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Google.Cloud.Firestore" Version="3.5.1" />
+    <PackageReference Include="Google.Cloud.Firestore.V1" Version="3.5.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="6.0.27" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.16" />
   </ItemGroup>

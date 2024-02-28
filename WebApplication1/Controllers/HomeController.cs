@@ -36,7 +36,7 @@ namespace WebApplication1.Controllers
         public IActionResult MembersLanding()
         { return View(); }
 
-
+        [Authorize]
         public async Task<IActionResult> Logout() //Task represents an asynchronous thread/process
         {
             await HttpContext.SignOutAsync(); //will erase the cookie holding the session alive
