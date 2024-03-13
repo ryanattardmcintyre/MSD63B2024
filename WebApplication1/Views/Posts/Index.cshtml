@@ -1,0 +1,35 @@
+﻿@model IEnumerable<WebApplication1.Models.Post>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>All the posts</h1>
+
+<p>
+    <a href="\Posts\Create?blogId=@ViewBag.blogId">Create New Post</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+         
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+         
+            <td>
+                <a href="/Posts/Read?postId=@item.Id&blogId=@item.BlogId_FK">Read Post</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
