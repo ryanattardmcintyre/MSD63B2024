@@ -10,14 +10,22 @@ namespace WebApplication1.Controllers
         //I need to REQUEST an instance of BlogsRepository to be used throughout this controller
         //to REQUEST  an instance: DEPENDENCY INJECTION
 
+
+        //we create fields and assign the parameter values to these fields within the constructor so that we can then
+        //access the field in all the methods within this class/controller
         private BlogsRepository blogsRepo;
         private BucketsRepository _bucketsRepository;
         private IConfiguration _config;
-        public BlogsController(BlogsRepository blogsRepository, BucketsRepository bucketsRepository, IConfiguration config) 
+        private PubSubRepository _pubsubRepository;
+        public BlogsController(BlogsRepository blogsRepository, 
+            BucketsRepository bucketsRepository, 
+            IConfiguration config,
+            PubSubRepository pubSubRepository) 
         {
             blogsRepo= blogsRepository;
             _bucketsRepository= bucketsRepository;
             _config= config;
+            _pubsubRepository= pubSubRepository;
         }
 
 
@@ -96,5 +104,15 @@ namespace WebApplication1.Controllers
             //blogsRepo.Delete(blogId);
             return RedirectToAction("Index");
         }
+
+        public async Task<IActionResult> CreateReport(string blogId) {
+            //push blogid into the topic/queue
+
+            await _pubsubRepository.PublishMessage(blogId);
+            TempData["message"] = "A pdf report will be created including all posts within this blog. you may continue browsing while we're working on it";
+            return RedirectToAction("Index");
+        }
+
+
     }
 }

@@ -1,4 +1,7 @@
-﻿@model IEnumerable<WebApplication1.Models.Blog>
+﻿@inject IConfiguration Configuration
+
+@model IEnumerable<WebApplication1.Models.Blog>
+
 
 @{
     ViewData["Title"] = "Index";
@@ -45,7 +48,26 @@
             <td>
                     @Html.ActionLink("Edit", "Edit", new { blogId = item.Id }) |
                     @Html.ActionLink("See Posts", "Index", "Posts", new { blogId = item.Id }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ }) |
+                    <a href="/Blogs/CreateReport?blogId=@item.Id">Create Report</a> |
+
+                   @* @if(item.Status == true)
+                    {*@
+                       
+
+                    @{
+                        var filename = item.Id + ".pdf";
+
+                        var bucket = Configuration.GetSection("bucket").Value;
+
+                        var resultingPath = bucket + "//" + filename;
+
+                    }
+
+                    <a href="https://storage.cloud.google.com/@resultingPath">Download</a>
+
+                    @*}*@
+
             </td>
         </tr>
 }
