@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using WebApplication1.Models;
+using WebApplication1.Repositories;
 
 namespace WebApplication1.Controllers
 {
@@ -10,8 +11,9 @@ namespace WebApplication1.Controllers
     {
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, RedisRepository rr)
         {
+            rr.IncrementCounter();
             _logger = logger;
         }
 
