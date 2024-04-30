@@ -1,5 +1,7 @@
+using Google.Cloud.SecretManager.V1;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
+using Newtonsoft.Json.Linq;
 using PdfSharp.Fonts;
 using WebApplication1.Controllers;
 using WebApplication1.Repositories;
@@ -15,6 +17,17 @@ namespace WebApplication1
 
             string keyFilePath = builder.Environment.ContentRootPath + "msd63b2024-e89abcf33d84.json";
             System.Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", keyFilePath);
+            
+            
+            string project = builder.Configuration["project"].ToString();
+            var mySecrets = GetMySecrets(project); //mySecrets will be returned in json-format
+
+            // Parse the JSON string into a JObject
+            JObject jsonObject = JObject.Parse(mySecrets);
+
+            // Access values by key
+            string clientId = (string)jsonObject["Authentication:Google:ClientId"];
+            string clientSecret = (string)jsonObject["Authentication:Google:ClientSecret"];
 
 
             builder.Services
@@ -26,8 +39,8 @@ namespace WebApplication1
                 .AddCookie()
                 .AddGoogle(options =>
                 {
-                    options.ClientId = "";//builder.Configuration["Authentication:Google:ClientId"];
-                    options.ClientSecret = ""; //builder.Configuration["Authentication:Google:ClientSecret"];
+                    options.ClientId = clientId;//builder.Configuration["Authentication:Google:ClientId"];
+                    options.ClientSecret = clientSecret; //builder.Configuration["Authentication:Google:ClientSecret"];
                 });
 
 
@@ -46,7 +59,7 @@ namespace WebApplication1
             builder.Services.AddRazorPages();
 
 
-            string project = builder.Configuration["project"].ToString();
+       
             string bucket = builder.Configuration["bucket"].ToString();
 
             //this is where we inform the runtime, that there is a service called BlogsRepository/PostsRepository that needs to
@@ -89,5 +102,27 @@ namespace WebApplication1
 
             app.Run();
         }
+
+
+        public static string GetMySecrets(string projectId)
+        {
+
+            string secretId = "mysecrets";
+            string secretVersionId = "1";
+             
+                // Create the client.
+            SecretManagerServiceClient client = SecretManagerServiceClient.Create();
+
+            // Build the resource name.
+            SecretVersionName secretVersionName = new SecretVersionName(projectId, secretId, secretVersionId);
+
+            // Call the API.
+            AccessSecretVersionResponse result = client.AccessSecretVersion(secretVersionName);
+
+            // Convert the payload to a string. Payloads are bytes by default.
+            String payload = result.Payload.Data.ToStringUtf8();
+            return payload; //json string
+        }
+    
     }
 }

@@ -11,10 +11,16 @@ namespace WebApplication1.Repositories
         public RedisRepository()
         {
             //to configure the connectionstring
-
-            var connection = ConnectionMultiplexer.Connect(
-                "");
-            db = connection.GetDatabase();
+            try
+            {
+                var connection = ConnectionMultiplexer.Connect(
+                    "redis-17265.c284.us-east1-2.gce.redns.redis-cloud.com:17265,password=");
+                db = connection.GetDatabase();
+            }
+            catch (Exception ex)
+            {
+                //atm its not working
+            }
         
         }
 
@@ -39,14 +45,22 @@ namespace WebApplication1.Repositories
         //Read from the cache
         public int GetCounterInfo()
         {
-            string counter = db.StringGet("counter");
-            if (string.IsNullOrEmpty(counter))
+            try
             {
-                return 0;
+                string counter = db.StringGet("counter");
+                if (string.IsNullOrEmpty(counter))
+                {
+                    return 0;
+                }
+                else
+                {
+                    return Convert.ToInt32(counter);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return Convert.ToInt32(counter);
+                //log the error
+                return 0;
             }
         
         }
