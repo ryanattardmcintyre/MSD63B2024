@@ -17,8 +17,17 @@ namespace WebApplication1.Controllers
             _logger = logger;
         }
 
-        public IActionResult Index()
+        public IActionResult Index([FromServices] LogsRepository lr)
         {
+            try
+            {
+                lr.WriteLogEntry("HomeController-Log", "Just entered the Index action", Google.Cloud.Logging.Type.LogSeverity.Info);
+
+                throw new Exception("Error generated on purpose so we test the log entries");
+            }
+            catch (Exception ex) {
+                lr.WriteLogEntry("HomeController-Log", ex.Message, Google.Cloud.Logging.Type.LogSeverity.Error);
+            }
             return View();
         }
 

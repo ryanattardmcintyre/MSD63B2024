@@ -73,6 +73,7 @@ namespace WebApplication1
             builder.Services.AddScoped(x => new PubSubRepository(project, "msd63b2024_ra"));
             builder.Services.AddScoped<IFontResolver, FileFontResolver>();
             builder.Services.AddScoped<RedisRepository>();
+            builder.Services.AddScoped(x=>new LogsRepository(project));
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
